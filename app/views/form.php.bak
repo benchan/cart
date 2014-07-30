@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Laravel PHP Framework</title>
+    <style>
+        @import url(//fonts.googleapis.com/css?family=Lato:700);
+
+        body {
+            margin:0;
+            font-family:'Lato', sans-serif;
+            text-align:center;
+            color: #999;
+        }
+
+        .welcome {
+            width: 300px;
+            height: 200px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -150px;
+            margin-top: -100px;
+        }
+
+        a, a:visited {
+            text-decoration:none;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 16px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div>
+<?php
+echo Form::open(array('url' => 'form'));
+
+//echo Form::text('email', 'example@gmail.com');
+//echo Form::email('test', $value = null, $attributes = array());
+//echo Form::checkbox('name', 'value');
+?>
+
+
+<?=Form::text('last_name', $last_name, array('required'=>'required', 'placeholder'=>'姓'));?>
+<?=Form::text('first_name', $first_name, array('required'=>'required', 'placeholder'=>'名'));?>
+<?=Form::text('last_name_kana', $last_name_kana, array('required'=>'required', 'placeholder'=>'セイ'));?>
+<?=Form::text('first_name_kana', $first_name_kana, array('required'=>'required', 'placeholder'=>'メイ'));?>
+〒 <?=Form::text('zip', $zip, array(
+    'required'=>'required',
+    'placeholder'=>'郵便番号',
+    'maxlength'=>'8',
+    'size'=>'12'
+));?>
+<?=Form::select('prefecture', $prefectures, $prefecture);?>
+<?=Form::text('city', $city, array('required'=>'required', 'placeholder'=>'市区町村', 'class'=>'width-80'));?>
+<?=Form::text('address1', $address1, array('required'=>'required', 'placeholder'=>'住所1', 'class'=>'width-80'));?>
+<?=Form::text('address2', $address2, array('required'=>'required', 'placeholder'=>'住所2','class'=>"width-80"));?>
+<?=Form::text('tel', $tel, array(
+    'required'=>'required',
+    'placeholder'=>'TEL',
+    'maxlength'=>'11',
+    'class'=>'width-80',
+));?>
+       
+<?=Form::email('email', $email, array('required'=>'required', 'placeholder'=>'メールアドレス','class'=>"width-80"));?>
+<?=Form::select('gender', $genders, $gender);?>
+<?=Form::text('birth_year', $birth_year, array('maxlength'=>"4","class"=>"width-10"));?>
+ 年
+<?=Form::text('birth_month', $birth_month, array('maxlength'=>"2","class"=>"width-10"));?>
+ 月
+<?=Form::text('birth_day', $birth_day, array('maxlength'=>"2","class"=>"width-10"));?>
+ 日
+<?=Form::radio('addition_type', 0, ! $addition_type, array("id"=>"addition_type", "required"=>"required"));?>顧客住所へ配送
+<?=Form::radio('addition_type', 1, $addition_type, array("id"=>"addition_type_on","required"=>"required"));?>別の住所へ配送
+
+
+
+// ########################
+<?=Form::input('addition_last_name', $addition_last_name, array('placeholder'=>'姓'));?>
+<?=Form::input('addition_first_name', $addition_first_name, array('placeholder'=>'名'));?>
+
+<?=Form::input('addition_last_name_kana', $addition_last_name_kana, array('placeholder'=>''));?>
+<?=Form::input('addition_first_name_kana', $addition_first_name_kana, array('placeholder'=>''));?>
+〒 <?=Form::input('addition_zip', $addition_zip, array(
+    'placeholder'=>'郵便番号',
+    'maxlength'=>'8',
+    'size'=>'12'
+));?>
+<?=Form::select('addition_prefecture_name', $prefectures, $addition_prefecture_name);?>
+
+
+<?=Form::submit('submit');?>
+
+<?php
+echo Form::close();
+?>
+
+
+    </div>
+
+</body>
+</html>
