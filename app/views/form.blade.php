@@ -4,6 +4,10 @@
 タイトル
 @stop
 
+@section('head')
+<script src="/js/cart.input_customer.js"></script>
+@stop
+
 @section('body')
 <?=Form::open(array('url' => 'form'));?>
 <div>
@@ -70,6 +74,8 @@
     'maxlength'=>'11',
     'class'=>'width-80',
 ));?>
+
+{{{$messages->first('tel')}}}
     </tr>
     <tr>
         <th>メールアドレス</th>
@@ -101,7 +107,7 @@
 <?=Form::radio('addition_type', 1, $addition_type, array("id"=>"addition_type_on","required"=>"required"));?>別の住所へ配送
     </tr>
 </tbody></table>
-
+<br/>
 <table style="display: table;" class="unit-centered table-bordered cartTableVartical" id="additionTable">
     <tbody><tr>
         <td colspan="2"><strong>お届け先情報</strong></td>

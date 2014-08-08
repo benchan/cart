@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title')</title>
+    <script src="/js/jquery-1.10.1.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/kube.css">
 	<link rel="stylesheet" type="text/css" href="/css/cart.css">
     <style>
@@ -29,6 +30,7 @@
             margin-bottom:10px !important;
         }
     </style>
+ @yield('head')
 </head>
 <body>
 <div id="wrap">

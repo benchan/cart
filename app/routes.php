@@ -21,7 +21,8 @@ Route::get('carttest', function() {
 });
 
 Route::post('cart', function() {
-    $s = cartCache();
+    cartCache();
+    $s =  Session::get('cart');
     return View::make('cart')->with('cart', $s);
 });
 
@@ -62,7 +63,10 @@ Route::post('/form', function() {
 Route::post('send', function() {
 
     $input = Session::pull('data');
-    Mail::send('emails.form', $input, function($message)
+    $cart = Session::pull('cart');
+    $input = array_add($input, 'cart', $cart);
+
+    Mail::send(array('text' => 'emails.form'), $input, function($message)
     {
         $message->to('foo@example.com','John Smith')
             ->from('horie@local')
@@ -107,7 +111,6 @@ function iniSet()
         'addition_address_2'=>'',
         'addition_tel_1'=>'',
         'payment'=>'',
-            
     );
 }
 
@@ -126,7 +129,6 @@ function myValidation($input)
         ),
         $custom_message
     );
-
     View::share('messages', $validator->messages());
 
     return $validator;
@@ -135,7 +137,7 @@ function myValidation($input)
 function cartCache()
 {
     $s = array();
-    if(isset($session['cart'])){
+    if(Session::has('cart')){
         $s = Session::get('cart');
     }
 
@@ -168,7 +170,6 @@ function cartCache()
     Session::put('cart', $s);
 
     return $s;
-
 }
 
 

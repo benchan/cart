@@ -15,22 +15,21 @@
         <th>数量</th>
         <th>小計</th>
     </tr>
-<?php foreach($cart as $item){ ?>
-<?php foreach($item as $val){ ?>
+@foreach ($cart as $item)
+@foreach ($item as $val)
     <tr>
-    <td><?=$val['code']?></td>
-    <td><?=$val['order_type']?></td>
-    <td><?=$val['price']?></td>
-    <td><?=$val['num']?></td>
-    <td><?=$val['num']*$val['price']?></td>
+    <td>{{{$val['code']}}}</td>
+    <td>{{{$val['order_type']}}}</td>
+    <td>{{{$val['price']}}}</td>
+    <td>{{{$val['num']}}}</td>
+    <td>{{{$val['num']*$val['price']}}}</td>
     </tr>
-<?php } ?>
-<?php } ?>
+@endforeach
+@endforeach
 </table>
 
 <button src="input" onclick="javascript:location.href='./form'">入力</button>
 </div>
-
 
 @stop
 
