@@ -17,6 +17,7 @@
 
 // cart
 Route::get('carttest', function() {
+    $items = Item::all();
     return View::make('carttest');
 });
 
@@ -41,7 +42,6 @@ Route::get('user/{userName}', function($userName)
 
 Route::get('/form', function()
 {
-
     $validator = myValidation(array());
     View::share('messages', $validator->messages());
     return View::make('form', iniSet());
@@ -62,9 +62,15 @@ Route::post('/form', function() {
 // send email
 Route::post('send', function() {
 
-    $input = Session::pull('data');
-    $cart = Session::pull('cart');
+    $input = Session::get('data');
+    $cart = Session::get('cart');
     $input = array_add($input, 'cart', $cart);
+
+    $input['prefecture'] = $prefectures[$input['prefecture']];
+    $input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
+    $input['gender'] = $genders[$input['gender']];
+
+    saveData();
 
     Mail::send(array('text' => 'emails.form'), $input, function($message)
     {
@@ -79,6 +85,25 @@ Route::get('send', function() {
     return View::make('form_sent');
 });
 
+function saveData()
+{
+    $input = Session::get('data');
+    $cart = Session::get('cart');
+    $save_data = array();
+
+    $input['prefecture'] = $prefectures[$input['prefecture']];
+    $input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
+    $input['gender'] = $genders[$input['gender']];
+
+    foreach($cart as $code => $item){
+        foreach($item as $val){
+            $save_data[] = array_merge($input, $val);
+            $order = Order::create(array_merge($input, $val));
+        }
+    }
+
+    return $order;
+}
 
 function iniSet()
 {
