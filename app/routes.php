@@ -65,8 +65,12 @@ Route::post('send', function() {
     $input = Session::get('data');
     $cart = Session::get('cart');
     $input = array_add($input, 'cart', $cart);
+    $prefectures = unserialize(_PREFECTURES_);
+    $genders = unserialize(_GENDARS_);
 
-    $input['prefecture'] = $prefectures[$input['prefecture']];
+
+
+    //$input['prefecture'] = $prefectures[$input['prefecture']];
     $input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
     $input['gender'] = $genders[$input['gender']];
 
@@ -91,8 +95,11 @@ function saveData()
     $cart = Session::get('cart');
     $save_data = array();
 
-    $input['prefecture'] = $prefectures[$input['prefecture']];
-    $input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
+    $prefectures = unserialize(_PREFECTURES_);
+    $genders = unserialize(_GENDARS_);
+
+    //$input['prefecture'] = $prefectures[$input['prefecture']];
+    //$input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
     $input['gender'] = $genders[$input['gender']];
 
     foreach($cart as $code => $item){
@@ -213,6 +220,9 @@ $prefectures = array(
         "鹿児島県", "沖縄県");
 
 $genders=array(0=>"-", 1=>"女性",2=>"男性");
+
+define("_PREFECTURES_", serialize($prefectures));
+define("_GENDARS_", serialize($genders));
 
 
 View::share('prefectures', $prefectures);
