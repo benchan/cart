@@ -17,7 +17,6 @@
 
 // cart
 Route::get('carttest', function() {
-    $items = Item::all();
     return View::make('carttest');
 });
 
@@ -88,6 +87,53 @@ Route::post('send', function() {
 Route::get('send', function() {
     return View::make('form_sent');
 });
+
+
+Route::get('/csv', function() {
+    $table = Order::all();
+    $output="";
+ 
+    foreach ($table as $row) {
+        $output .= '"';
+        $output .=  implode('","',$row->toArray());
+        $output .= "\"\n";
+    }
+    $headers = array(
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="ExportFileName.csv"',
+    );
+ 
+    return Response::make(rtrim($output, "\n"), 200, $headers);
+});
+
+
+Route::get('/csv2', function() {
+    get_export();
+});
+
+
+
+
+/**
+ * get_export 
+ * saved to public folder
+ * 
+ * @access public
+ * @return void
+ */
+function get_export()
+{
+    $table = Order::all();
+    $file = fopen('file.csv', 'w');
+    foreach ($table as $row) {
+        fputcsv($file, $row->toarray());
+    }
+    fclose($file);
+    //return Redirect::to('consolidated');
+}
+
+
+
 
 function saveData()
 {
@@ -168,6 +214,10 @@ function myValidation($input)
 
 function cartCache()
 {
+    //$items = Item::all();
+ 
+
+
     $s = array();
     if(Session::has('cart')){
         $s = Session::get('cart');
@@ -179,19 +229,33 @@ function cartCache()
 
         // $post = $this->getCartData($errors);
         $code = array_get($post, 'code');
+        $name = array_get($post, 'name');
         $num = array_get($post, 'num');
         $order_type = array_get($post, 'order_type');
         $price = array_get($post, 'price');
 
+        /**
+         *  DBAから商品コードを元に
+         *  商品データの取得
+         */
+        $itemArr = Item::where('code', '=', $code)->first();
+        if(!empty($itemArr)){
+            $item = $itemArr->toarray();
+            $name = $item["name"];
+            $price = $item["price"];
+        }
+
 
         // count
         if(isset($s[$code][$order_type]) && isset($s[$code][$order_type])){
+            $s[$code][$order_type]['name'] = $name;
             $s[$code][$order_type]['num'] += $num;
             $s[$code][$order_type]['price'] = $price;
 
         }else{
             if($code && $num && $order_type){
                 $s[$code][$order_type]['code'] = $code;
+                $s[$code][$order_type]['name'] = $name;
                 $s[$code][$order_type]['num'] = $num;
                 $s[$code][$order_type]['order_type'] = $order_type;
                 $s[$code][$order_type]['price'] = $price;

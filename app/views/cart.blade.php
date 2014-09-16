@@ -18,7 +18,7 @@
 @foreach ($cart as $item)
 @foreach ($item as $val)
     <tr>
-    <td>{{{$val['code']}}}</td>
+    <td>[{{{$val['code']}}}] {{{$val['name']}}}</td>
     <td>{{{$val['order_type']}}}</td>
     <td>{{{$val['price']}}}</td>
     <td>{{{$val['num']}}}</td>
