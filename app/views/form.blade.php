@@ -147,7 +147,7 @@
     <tr>
         <th>お届け先都道府県</th>
         <td>
-            <?=Form::select('addition_prefecture_name', $prefectures, $addition_prefecture_name);?>
+            <?=Form::select('addition_prefecture', $prefectures, $addition_prefecture);?>
         </td>
     </tr>
     <tr>

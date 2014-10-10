@@ -10,7 +10,12 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+Route::get('/', function() {
+    return View::make('hello');
+});
 
+
+Route::get('/item', 'ItemController@show');
 
 //Route::get('/', 'HomeController@showWelcome');
 
@@ -20,16 +25,21 @@ Route::get('carttest', function() {
     return View::make('carttest');
 });
 
+// cart insert
 Route::post('cart', function() {
     cartCache();
     $s =  Session::get('cart');
     return View::make('cart')->with('cart', $s);
 });
+// cart view
+Route::get('cart', function()
+{
+    if(!Session::has('cart')) return View::make('cart_none');
+ 
 
-Route::get('/', function() {
-    return View::make('hello');
+    $s =  Session::get('cart');
+    return View::make('cart')->with('cart', $s);
 });
-
 
 
 // form
@@ -38,9 +48,11 @@ Route::get('user/{userName}', function($userName)
     return 'Hello, ' . $userName . '!';
 });
 
-
+// form
 Route::get('/form', function()
 {
+    if(!Session::has('cart')) return Redirect::to('cart');
+ 
     $validator = myValidation(array());
     View::share('messages', $validator->messages());
     return View::make('form', iniSet());
@@ -50,11 +62,11 @@ Route::get('/form', function()
 Route::post('/form', function() {
     $input = Input::all();
     $validator = myValidation($input);
-    
+    Session::put('data', $input);
+
     if($validator->fails()){
         return View::make('form', $input)->withErrors($validator);   
     }
-    Session::flash('data', $input);
     return View::make('form_confirm', $input);
 });
 
@@ -64,15 +76,6 @@ Route::post('send', function() {
     $input = Session::get('data');
     $cart = Session::get('cart');
     $input = array_add($input, 'cart', $cart);
-    $prefectures = unserialize(_PREFECTURES_);
-    $genders = unserialize(_GENDARS_);
-
-
-
-    //$input['prefecture'] = $prefectures[$input['prefecture']];
-    $input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
-    $input['gender'] = $genders[$input['gender']];
-
     saveData();
 
     Mail::send(array('text' => 'emails.form'), $input, function($message)
@@ -81,6 +84,7 @@ Route::post('send', function() {
             ->from('horie@local')
             ->subject('Welcome!');
     });
+    Session::flush();
     return Redirect::to('send');
 });
 
@@ -141,13 +145,6 @@ function saveData()
     $cart = Session::get('cart');
     $save_data = array();
 
-    $prefectures = unserialize(_PREFECTURES_);
-    $genders = unserialize(_GENDARS_);
-
-    //$input['prefecture'] = $prefectures[$input['prefecture']];
-    //$input['addition_prefecture_name'] = $prefectures[$input['prefecture']];
-    $input['gender'] = $genders[$input['gender']];
-
     foreach($cart as $code => $item){
         foreach($item as $val){
             $save_data[] = array_merge($input, $val);
@@ -160,6 +157,9 @@ function saveData()
 
 function iniSet()
 {
+    // ある場合
+    if($input = Session::get('data'))  return $input;
+
     return array(
         'first_name'=>'',
         'last_name'=>'',
@@ -183,7 +183,7 @@ function iniSet()
         'addition_last_name_kana'=>'',
         'addition_first_name_kana'=>'',
         'addition_zip'=>'',
-        'addition_prefecture_name'=>'',
+        'addition_prefecture'=>'',
         'addition_city'=>'',
         'addition_address_1'=>'',
         'addition_address_2'=>'',
@@ -216,8 +216,6 @@ function cartCache()
 {
     //$items = Item::all();
  
-
-
     $s = array();
     if(Session::has('cart')){
         $s = Session::get('cart');
@@ -271,7 +269,7 @@ function cartCache()
 
 
 
-$prefectures = array(
+$_prefectures = array(
         "北海道", "青森県", "岩手県", "宮城県", "秋田県",
         "山形県", "福島県", "茨城県", "栃木県", "群馬県",
         "埼玉県", "千葉県", "東京都", "神奈川県", "新潟県",
@@ -282,12 +280,11 @@ $prefectures = array(
         "徳島県", "香川県", "愛媛県", "高知県", "福岡県",
         "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県",
         "鹿児島県", "沖縄県");
+foreach($_prefectures as $val){
+    $prefectures[$val] = $val;
+}
 
-$genders=array(0=>"-", 1=>"女性",2=>"男性");
-
-define("_PREFECTURES_", serialize($prefectures));
-define("_GENDARS_", serialize($genders));
-
+$genders=array(0=>"-", "女性"=>"女性", "男性"=>"男性");
 
 View::share('prefectures', $prefectures);
 View::share('genders', $genders);

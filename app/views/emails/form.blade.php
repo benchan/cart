@@ -8,10 +8,10 @@
 {{{$prefecture}}} {{{$address1}}} {{{$address2}}}
 
 ■
-{{{$addition_last_name}}}  {{{$additin_first_name}}}
+{{{$addition_last_name}}}  {{{$addition_first_name}}}
 
 {{{$addition_zip}}}
-{{{$addition_prefecture}}} {{{$addition_address1}}} {{{$addition_address2}}}
+{{{$addition_prefecture}}} {{{$addition_address_1}}} {{{$addition_address_2}}}
 
 
 

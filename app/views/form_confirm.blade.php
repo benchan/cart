@@ -115,7 +115,7 @@
     </tr>
     <tr>
         <th>お届け先都道府県</th>
-        <td>{{{$addition_prefecture_name}}} </td>
+        <td>{{{$addition_prefecture}}} </td>
     </tr>
     <tr>
         <th>お届け先市区町村</th>
